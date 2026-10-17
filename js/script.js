@@ -1,5 +1,5 @@
 // ---- Business settings (edit here) ----
-const WHATSAPP = "917447663137";
+const WHATSAPP = "919423471812";
 const EMAIL = "pateloilfood@gmail.com";
 
 // ---- Mobile menu toggle ----

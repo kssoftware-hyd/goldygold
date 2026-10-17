@@ -1,11 +1,12 @@
 # Generates the 4 pages from one shared header/footer so they stay consistent.
 import json
 SITE="https://www.example.com"  # TODO: replace with the real domain, then run: python3 build.py
+GST="27AARCP4844R1ZB"
 ADDR="Plot No. 05, Sagar Nagar, Dhar Road, Parbhani 431401"
 MAPQ="Plot+No+05+Sagar+Nagar+Dhar+Road+Parbhani+431401+Maharashtra"
 # Structured data so Google can show the business, address and phone
-LD=json.dumps({"@context":"https://schema.org","@type":"LocalBusiness","name":"Patel Oil And Food Process Company Pvt. Ltd.","alternateName":"Patel Oil Food","brand":{"@type":"Brand","name":"Goldy Gold"},"description":"Edible soybean oil, spices and food processing in Parbhani, Maharashtra.","url":SITE+"/","logo":SITE+"/images/logo.jpeg","image":SITE+"/images/factory.jpeg","email":"pateloilfood@gmail.com","telephone":["+919423471812","+917447663137","+918459608048"],"address":{"@type":"PostalAddress","streetAddress":"Plot No. 05, Sagar Nagar, Dhar Road","addressLocality":"Parbhani","addressRegion":"Maharashtra","postalCode":"431401","addressCountry":"IN"},"areaServed":["Parbhani","Maharashtra","India"],"founder":{"@type":"Person","name":"Atikh Patel"}})
-WA="https://wa.me/917447663137"
+LD=json.dumps({"@context":"https://schema.org","@type":"LocalBusiness","name":"Patel Oil And Food Process Company Pvt. Ltd.","alternateName":"Patel Oil Food","brand":{"@type":"Brand","name":"Goldy Gold"},"description":"Edible soybean oil, spices and food processing in Parbhani, Maharashtra.","url":SITE+"/","logo":SITE+"/images/logo.jpeg","image":SITE+"/images/factory.jpeg","taxID":GST,"email":"pateloilfood@gmail.com","telephone":["+919423471812","+917447663137","+918459608048"],"address":{"@type":"PostalAddress","streetAddress":"Plot No. 05, Sagar Nagar, Dhar Road","addressLocality":"Parbhani","addressRegion":"Maharashtra","postalCode":"431401","addressCountry":"IN"},"areaServed":["Parbhani","Maharashtra","India"],"founder":{"@type":"Person","name":"Atikh Patel"}})
+WA="https://wa.me/919423471812"
 def wa(msg): 
     from urllib.parse import quote
     return f"{WA}?text={quote(msg)}"
@@ -51,7 +52,7 @@ def page(fn,title,desc,body):
 <header class="site-header">
   <div class="wrap bar">
     <a class="brand" href="index.html" aria-label="Patel Oil And Food Process Company Pvt. Ltd. - home">
-      <img src="images/logo.jpeg" alt="Goldy Gold logo" width="56" height="50">
+      <img src="images/logo-circle.png" alt="Goldy Gold - Patel Oil And Food Process Company logo" width="300" height="300">
       <span class="bname"><b>Patel Oil And Food Process</b><b>Company Pvt. Ltd.</b><small>Goldy Gold &middot; Foodie's Favorite</small></span>
     </a>
     <button class="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="nav">
@@ -66,25 +67,35 @@ def page(fn,title,desc,body):
 <!-- FOOTER (same on every page) -->
 <footer class="site-footer">
   <div class="wrap foot-grid">
-    <div>
-      <h3>Patel Oil And Food Process Company Pvt. Ltd.</h3>
-      <p>Edible oil, spices and food processing.</p>
+    <div class="fcol brandcol">
+      <a class="fbrand" href="index.html"><img src="images/logo-circle.png" alt="Goldy Gold logo" width="72" height="72"><span>Patel Oil And Food Process Company Pvt. Ltd.</span></a>
+      <p>Edible soybean oil, spices and food processing in Parbhani, Maharashtra. Goldy Gold, Foodie's Favorite.</p>
+      <a class="btn wa" href="{GEN}" target="_blank" rel="noopener">Chat on WhatsApp</a>
     </div>
-    <div>
-      <h3>Pages</h3>
-      <ul>{"".join(f'<li><a href="{h}">{t}</a></li>' for h,t in NAV)}</ul>
+    <div class="fcol">
+      <h3>Quick links</h3>
+      <ul>{"".join(f'<li><a href="{h}">{t}</a></li>' for h,t in NAV)}<li><a href="index.html#products">Our Products</a></li></ul>
     </div>
-    <div>
+    <div class="fcol">
+      <h3>Our spices</h3>
+      <ul>{"".join(f'<li><a href="index.html#products">{n}</a></li>' for n in MQN[:7])}<li><a href="index.html#products">View all</a></li></ul>
+    </div>
+    <div class="fcol">
       <h3>Contact</h3>
       <address>
-        Plot No. 05, Sagar Nagar, Dhar Road,<br>Parbhani - 431401, Maharashtra<br><a href="https://www.google.com/maps/search/?api=1&query={MAPQ}" target="_blank" rel="noopener">Open in Google Maps</a><br>
+        Plot No. 05, Sagar Nagar, Dhar Road,<br>Parbhani - 431401, Maharashtra<br>
+        <a href="https://www.google.com/maps/search/?api=1&query={MAPQ}" target="_blank" rel="noopener">Open in Google Maps</a><br>
         <a href="tel:+919423471812">9423471812</a>, <a href="tel:+917447663137">7447663137</a>, <a href="tel:+918459608048">8459608048</a><br>
         <a href="mailto:pateloilfood@gmail.com">pateloilfood@gmail.com</a><br>
-        <a href="{GEN}" target="_blank" rel="noopener">WhatsApp: +91 744 766 3137</a>
+        GST No.: {GST}<br>
+        <a href="{GEN}" target="_blank" rel="noopener">WhatsApp: +91 942 347 1812</a>
       </address>
     </div>
   </div>
-  <p class="copy">&copy; <span id="year">2026</span> Patel Oil And Food Process Company Pvt. Ltd.</p>
+  <div class="wrap foot-bar">
+    <p>&copy; <span id="year">2026</span> Patel Oil And Food Process Company Pvt. Ltd. All rights reserved.</p>
+    <p class="dev">Designed &amp; Developed by <a href="https://kssoftware.co.in/" target="_blank" rel="noopener">KS Software</a></p>
+  </div>
 </footer>
 <a class="wa-float" href="{GEN}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">WhatsApp</a>
 <!-- Mobile app-style bottom tab bar (shown on phones only) -->
@@ -96,13 +107,16 @@ def page(fn,title,desc,body):
 def btns(extra=""):
     return f'<a class="btn gold" href="contact.html">Contact Us</a> <a class="btn wa" href="{GEN}" target="_blank" rel="noopener">Chat on WhatsApp</a>{extra}'
 
+boxes=[("Turmeric Powder","turmeric-powder"),("Kala Masala","kala-masala"),("Chicken Masala","chicken-masala"),("Mutton Masala","mutton-masala"),("Biryani Masala","biryani-masala"),("Pav Bhaji Masala","pav-bhaji-masala"),("Kashmiri Mirchi Masala","kashmiri-mirchi-masala"),("Kitchen King Masala","kitchen-king-masala"),("Yeser Banga Gravy Masala","yeser-banga-gravy-masala")]
 prods=[("Kala Masala","kala-masala"),("Pav Bhaji Masala","pav-bhaji-masala"),("Red Chilli Powder","red-chilli-powder"),("Chicken Masala","chicken-masala"),("Biryani Masala","biryani-masala"),("Turmeric Powder","turmeric-powder"),("Garam Masala","garam-masala"),("Coriander Powder","coriander-powder"),("Veg Masala","veg-masala")]
-pc="".join(f'<article class="pcard"><img src="images/products/{f}.jpg" alt="Goldy Gold {n} 100 g pack" width="300" height="460" loading="lazy"><h3>{n}</h3><a class="enq" href="{wa("Hello Patel Oil Food, I would like to enquire about "+n+".")}" target="_blank" rel="noopener">Enquire</a></article>' for n,f in prods)
+MQN=list(dict.fromkeys([n for n,f in boxes]+[n for n,f in prods]))
+def _card(n,f,d,cls,w,h): return f'<article class="pcard {cls}"><img src="images/{d}/{f}.jpg" alt="Goldy Gold {n} 100 g {cls}" width="{w}" height="{h}" loading="lazy"><h3>{n}</h3><a class="enq" href="{wa("Hello Patel Oil Food, I would like to enquire about "+n+".")}" target="_blank" rel="noopener">Enquire</a></article>'
+pc='<h3 class="sub">Spice boxes</h3><div class="pgrid">'+"".join(_card(n,f,"boxes","box",480,480) for n,f in boxes)+'</div><h3 class="sub">Spice pouches</h3><div class="pgrid">'+"".join(_card(n,f,"products","pouch",300,460) for n,f in prods)+'</div>'
 
 _w="Quality You Can Trust, Taste You Can Love.".split()
 H1=" ".join(f'<span class="w{' gold' if k>=4 else ''}" style="--i:{k}">{w}</span>' for k,w in enumerate(_w))
-MQ="".join(f"<span>{n}</span>" for n,f in prods)
-STEPS=[('Source','Soybeans and spices from local farmers and traders.'),('Extract','Crude oil extracted from soybean seed.'),('Refine','Oil refined and purified.'),('Process','Spices cleaned, dried, ground and blended.'),('Pack','Sachets, bottles, tins and 100 g spice packs.'),('Deliver','Branding and distribution to markets.')]
+MQ="".join(f"<span>{n}</span>" for n in MQN)
+STEPS=[('Source','Soybeans and spices from local farmers and traders.'),('Extract','Crude oil extracted from soybean seed.'),('Refine','Oil refined and purified.'),('Process','Spices cleaned, dried, ground and blended.'),('Pack','Sachets, bottles, tins and spice packs.'),('Deliver','Branding and distribution to markets.')]
 PROC="".join(f'<li><i>{k+1}</i><h3>{a}</h3><p>{b}</p></li>' for k,(a,b) in enumerate(STEPS))
 index=f'''<section class="hero" id="top">
   <div class="hero-bg" style="background-image:url('images/factory.jpeg')"></div>
@@ -124,7 +138,7 @@ index=f'''<section class="hero" id="top">
 </section>
 <div class="marquee" aria-hidden="true"><div class="track">{MQ}{MQ}</div></div>
 <section class="stats"><div class="wrap sgrid">
-  <div><b data-count="9">9</b><span>Spice products</span></div>
+  <div><b data-count="13">13</b><span>Spice products</span></div>
   <div><b data-count="3">3</b><span>Oil pack formats</span></div>
   <div><b data-count="6">6</b><span>Process stages</span></div>
   <div><b data-count="5">5</b><span>Leadership team</span></div>
@@ -132,8 +146,8 @@ index=f'''<section class="hero" id="top">
 <section class="sec">
   <div class="wrap">
     <h2 id="products">Our products</h2>
-    <p class="lead">Goldy Gold spices in 100 g packs. Tap Enquire to message us on WhatsApp.</p>
-    <div class="pgrid">{pc}</div>
+    <p class="lead">Goldy Gold spices in 9 g, 50 g, 100 g and 200 g packs. Tap Enquire to message us on WhatsApp.</p>
+    {pc}
   </div>
 </section>
 <section class="sec dark"><div class="wrap"><h2>From farm to pack</h2><p class="lead">Our planned production flow.</p><ol class="steps">{PROC}</ol></div></section>
@@ -205,23 +219,34 @@ about=f'''<section class="page-head"><div class="wrap"><h1>About Us</h1><p>Patel
   </div>
 </section>'''
 
-team=[("Atikh Patel","CEO and Founder","atikh-patel"),("Abdul Haque","Chief Financial Officer","abdul-haque"),("Shaikh Juned","Director and Business Strategy","shaikh-juned"),("Afreen Shaikh","Director","afreen-shaikh"),("Maheen Khan","Director","maheen-khan")]
-tc="".join(f'<article class="member{" lead-m" if i==0 else ""}"><img src="images/team/{f}.jpg" alt="Portrait of {n}, {r}" width="480" height="600" loading="lazy"><div><h3>{n}</h3><p>{r}</p></div></article>' for i,(n,r,f) in enumerate(team))
+team=[("Atikh Patel","CEO and Founder","atikh-patel"),("Abdul Haque","Chief Financial Officer","abdul-haque"),("Shaikh Juned","Director and Business Strategy","shaikh-juned"),("Maheen Khan","Director","maheen-khan"),("Afreen Shaikh","Director","afreen-shaikh")]
+# Order matters: Abdul | Juned on row 1, Maheen (below Abdul) | Afreen (below Juned) on row 2
+tc="".join(f'<article class="member"><img src="images/team/{f}.jpg" alt="Portrait of {n}, {r}" width="480" height="600" loading="lazy"><div><h3>{n}</h3><p>{r}</p></div></article>' for n,r,f in team[1:])
 director=f'''<section class="page-head"><div class="wrap"><h1>Our Team</h1><p>The people leading Patel Oil And Food Process Company Pvt. Ltd.</p></div></section>
-<section class="sec">
-  <div class="wrap">
-    <div class="team">{tc}</div>
+<section class="sec tint ceo-sec">
+  <div class="wrap ceo">
+    <div class="ceo-text">
+      <p class="eyebrow dk">CEO and Founder</p>
+      <h2>Atikh Patel</h2>
+      <p>Leading Patel Oil And Food Process Company Pvt. Ltd. in Parbhani, Maharashtra, with Goldy Gold edible oil and spices.</p>
+      <a class="btn wa" href="{wa("Hello Atikh Patel, I would like to connect with Patel Oil Food.")}" target="_blank" rel="noopener">Message on WhatsApp</a>
+    </div>
+    <div class="ceo-photo"><img src="images/team/atikh-patel.jpg" alt="Portrait of Atikh Patel, CEO and Founder" width="480" height="648"></div>
+    <div class="ceo-points">
+      <h3>What we stand for</h3>
+      <ul class="ticks">
+        <li>Quality and safe edible oils and spices</li>
+        <li>Value addition to local agricultural produce</li>
+        <li>Jobs for local youth and women</li>
+        <li>Collaboration with farmers, traders and small businesses</li>
+      </ul>
+    </div>
   </div>
 </section>
-<section class="sec tint">
+<section class="sec">
   <div class="wrap">
-    <h2>What we stand for</h2>
-    <ul class="ticks">
-      <li>Quality and safe edible oils and spices</li>
-      <li>Value addition to local agricultural produce</li>
-      <li>Jobs for local youth and women</li>
-      <li>Collaboration with farmers, traders and small businesses</li>
-    </ul>
+    <h2>Leadership team</h2>
+    <div class="team team2">{tc}</div>
   </div>
 </section>'''
 
@@ -233,8 +258,9 @@ contact=f'''<section class="page-head"><div class="wrap"><h1>Contact Us</h1><p>S
       <p><strong>Patel Oil And Food Process Company Pvt. Ltd.</strong></p>
       <p>Plot No. 05, Sagar Nagar, Dhar Road,<br>Parbhani - 431401</p>
       <p>Phone: <a href="tel:+919423471812">9423471812</a>, <a href="tel:+917447663137">7447663137</a>, <a href="tel:+918459608048">8459608048</a></p>
-      <p>WhatsApp: <a href="{GEN}" target="_blank" rel="noopener">+91 744 766 3137</a></p>
+      <p>WhatsApp: <a href="{GEN}" target="_blank" rel="noopener">+91 942 347 1812</a></p>
       <p>Email: <a href="mailto:pateloilfood@gmail.com">pateloilfood@gmail.com</a></p>
+      <p>GST No.: <strong>{GST}</strong></p>
       <div class="cta"><a class="btn wa" href="{GEN}" target="_blank" rel="noopener">Chat on WhatsApp</a> <a class="btn gold" href="mailto:pateloilfood@gmail.com?subject=Business%20enquiry">Email Us</a></div>
     </div>
     <form id="enquiry" novalidate>
